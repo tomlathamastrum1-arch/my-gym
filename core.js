@@ -11,6 +11,7 @@ const feedback=f=>f&&['unknown','easy','steady','hard'].includes(f.effort)&&['un
 const logged=e=>ex(e)&&(e.feedback===undefined||feedback(e.feedback))&&(e.bodyweight===undefined||typeof e.bodyweight==='boolean')&&(e.rest===undefined||validNum(e.rest,10,900))&&Array.isArray(e.log)&&e.log.length<=100&&e.log.every(s=>s&&validNum(s.weight,0,10000)&&Number.isInteger(s.reps)&&validNum(s.reps,0,1000)&&typeof s.done==='boolean'&&(s.warmup===undefined||typeof s.warmup==='boolean'));
 const session=s=>s&&str(s.id)&&str(s.name)&&Number.isFinite(Date.parse(s.started))&&(s.notes===undefined||(typeof s.notes==='string'&&s.notes.length<=2000))&&Array.isArray(s.exercises)&&s.exercises.length<=100&&s.exercises.every(logged);
 if(!d.routines.every(r=>r&&str(r.id)&&str(r.name)&&Array.isArray(r.exercises)&&r.exercises.length<=100&&r.exercises.every(ex))||!d.history.every(s=>session(s)&&Number.isFinite(Date.parse(s.finished)))||(d.active!==null&&!session(d.active))||(d.timerEnd!==null&&!validNum(d.timerEnd,0,1e15)))throw Error('Backup contents are invalid.');
+if(d.aiCoach!==undefined)(typeof module!=='undefined'?require('./ai-coach-core.js'):root.AICoachCore).validate(d.aiCoach);
 if(d.lastExport!==undefined&&d.lastExport!==null&&!validNum(d.lastExport,0,1e15))throw Error('Invalid backup timestamp.');
 if(d.profile!==undefined)(typeof module!=='undefined'?require('./coach.js'):root.Coach).validateProfile(d.profile);
 if(d.personal!==undefined)(typeof module!=='undefined'?require('./body.js'):root.Body).validatePersonal(d.personal);

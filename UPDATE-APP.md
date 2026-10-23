@@ -1,13 +1,10 @@
-# Update to the encrypted app
+# Update: in-app AI coach and encrypted chat
 
-1. Before updating, export your existing workout data and any separate photo backup. Keep them privately. These older files remain readable until you separately remove them.
-2. Extract iron-local-encrypted.zip. Upload the contents of its iron-local folder to your existing GitHub repository, replacing old app files. index.html must remain at the repository root. Never upload your private profile or backups.
-3. Include all files. New required files are crypto-box.js, vault.js, security-ui.js, and ENCRYPTION.md. This release uses offline cache version 16.
-4. After GitHub Pages finishes deploying, open the same HTTPS address online, let the files download, then close all copies and reopen. A second close/reopen may be needed. Do not clear site data.
-5. You will see the passphrase setup screen. Choose and repeat your own strong passphrase (at least 14 characters). Close other app/site windows before enabling encryption. There is no password reset.
-6. The app encrypts and verifies its current workout data and app photos before removing older readable browser records. If it reports a migration/save problem, keep the app open and follow its recovery screen.
-7. Open Profile → Encryption & locking → Export complete encrypted backup. Save it privately. This complete backup includes photos. Test a restore on another browser/device using the passphrase you chose.
+1. In your current app, export a complete encrypted backup and save it privately.
+2. Extract iron-local-ai-coach.zip. Upload only the files inside its iron-local folder to your existing GitHub repository, replacing matching files. Keep index.html at the repository root and include all new AI modules. Never upload private profiles, backups, photos, API keys, or connection tokens.
+3. After GitHub Pages deploys, open the same app address online, let it load, close all copies, then reopen. A second close/reopen may be needed for offline cache version 18. Do not clear site data or uninstall the app.
+4. Unlock using your existing passphrase. Open Today → AI coach or Plan → AI coach. The screen is built, but live replies require the separate backend setup in AI-COACH.md.
+5. The separate ai-coach-backend.zip is for Cloudflare, not your public gym site. It contains no secrets. Supply OPENAI_API_KEY and COACH_TOKEN through Cloudflare's private secret prompts, then enter only the backend URL and COACH_TOKEN into the gym app. Do not share your API key or vault passphrase in chat.
+6. Test first with a generic question and no workout context. Confirm a reply saves, lock/unlock, then export a new encrypted backup. Saved AI chat and the connection token are included in full and workout backups; photos remain excluded from workout-only backups.
 
-Your live site has not been changed automatically. The package contains generic source/tests only, with no personal records, photos, backup files, or preset user password. Read ENCRYPTION.md for the security boundaries and recovery rules.
-
-The workout-only export excludes photos; a complete encrypted backup includes them. Old files in Photos, Files, iCloud, or earlier exports are not changed by the app. Encryption does not protect an unlocked screen or compromised app code. Physical iPhone lifecycle and restore behavior still need verification on your phone.
+No live site, paid account, API billing, backend deployment, or API credentials were changed automatically. The new AI requests need internet and incur API costs. The existing offline rule-based coach and free Ask ChatGPT copy/paste feature remain available. All shipped source/tests use generic or fictional data, with no personal records or preset user password.

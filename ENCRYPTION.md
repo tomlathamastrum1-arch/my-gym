@@ -1,3 +1,7 @@
+# Optional AI coach update
+
+AI-COACH.md describes the new in-app coach, separate backend activation, API billing, and privacy boundaries. Saved chat and backend tokens are encrypted in your existing vault and backups. Approved AI messages leave the device and are readable by your backend host and OpenAI; older descriptions of all data staying local apply to offline features only. No live API connection has been configured for you.
+
 # Your encrypted gym vault
 
 This version requires a passphrase before showing personal app data. It remains free, offline-capable, and account-free. Encryption is implemented with the browser's Web Crypto API: AES-256-GCM authenticated encryption, fresh random 96-bit IVs, and PBKDF2-HMAC-SHA-256 with 600,000 iterations and a random 128-bit salt. Record identifiers and vault identity are bound as authenticated context. Keys are derived locally, are non-extractable CryptoKey objects, and are not saved in browser storage or sent to a server.
