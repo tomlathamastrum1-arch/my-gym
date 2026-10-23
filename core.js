@@ -16,6 +16,7 @@ if(d.profile!==undefined)(typeof module!=='undefined'?require('./coach.js'):root
 if(d.personal!==undefined)(typeof module!=='undefined'?require('./body.js'):root.Body).validatePersonal(d.personal);
 if(d.bodyLogs!==undefined){if(!Array.isArray(d.bodyLogs)||d.bodyLogs.length>10000)throw Error('Invalid body check-ins.');d.bodyLogs.forEach(l=>(typeof module!=='undefined'?require('./body.js'):root.Body).validateLog(l));}
 for(const s of [...d.history,...(d.active?[d.active]:[])])if((s.coached!==undefined&&typeof s.coached!=='boolean')||(s.readiness!==undefined&&!['good','tired','poor'].includes(s.readiness)))throw Error('Invalid coaching data.');
+if(d.trainer!==undefined||[...d.history,...(d.active?[d.active]:[])].some(s=>s.timeBudget!==undefined||s.warmupDone!==undefined||s.exercises.some(e=>e.variant!==undefined||e.practice!==undefined||e.log.some(l=>l.feedback!==undefined))))(typeof module!=='undefined'?require('./trainer.js'):root.Trainer).extras(d);
 return d;
 }
 const completed=e=>e.log.filter(s=>s.done&&s.reps>0);

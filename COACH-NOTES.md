@@ -1,6 +1,6 @@
 # Your adaptive beginner planner
 
-Open **Coach** to set up your goal, available days, session time, age group, equipment, and exercises you want to exclude. Setup is required; the app does not infer your needs from generic defaults. Profiles, feedback, and plans stay on device and are included in JSON backups.
+Open **Plan** to set up your goal, available days, session time, age group, equipment, and exercises you want to exclude. Setup is required; the app does not infer your needs from generic defaults. Profiles, feedback, and plans stay on device and are included in JSON backups.
 
 ## What is implemented
 
@@ -38,3 +38,7 @@ General beginner guidance supports starting gradually, practicing controlled mov
 - NIDDK: https://www.niddk.nih.gov/health-information/weight-management/tips-get-active/tips-starting-physical-activity
 
 Developer checks: `node test.cjs` and `node coach-test.cjs`. Coaching checks cover first-day calibration, goals/time/equipment filters, exclusion handling, feedback requirements, readiness, pain, session spacing, progression, volume changes, bodyweight treatment, and backup validation. Browser checks covered setup, demonstration-plan generation, workout start, feedback controls, and rejecting an unknown starting load. The demonstration profile used for testing is not your personal prescription.
+
+## Personal coaching extension
+
+Read COACHING.md for the assessment, required daily check-in, per-set feedback, equipment identifiers, warmups, substitutions, short-session mode, weekly and seven-day easier options, return-after-break rules, photo backups, and manual Health exchange. The precise thresholds are transparent product rules, not a clinically validated protocol. Existing limits on form assessment, pain, and guaranteed outcomes still apply.
