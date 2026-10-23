@@ -1,0 +1,7 @@
+Verified simplification update
+
+173 automated checks passed (11 specifically for the simpler interface), covering navigation, unchanged records during navigation, safety gates, set logging, timer state, encrypted storage and backups, training rules, and guides.
+
+Browser preview verified: simplified Today, daily check-in, and a workout showing one exercise at a time. Preview used fictional data in a disposable local page. An actual iPhone was not available for testing.
+
+Application files only. No user workout records, photos, passphrases, or private profile exports are included.
