@@ -1,3 +1,7 @@
+# Training improvements update
+
+This release has 25 offline movement guides, a provisional seven-day preview, calendar-week muscle reports, equipment-specific progression increments, and encrypted-backup verification without restoring. See TRAINING-PLUS.md and UPDATE-APP.md for the current behavior and update steps; older descriptions below may refer to the earlier 13-guide release. AI chat remains removed.
+
 > **Encryption update:** This release requires a passphrase. Saved workouts, notes, Health summaries, and app photos are encrypted. Use Profile → Encryption & locking for a complete encrypted backup, including photos. Older installation/history notes below may describe the earlier readable format; ENCRYPTION.md takes precedence.
 
 # Exercise library update

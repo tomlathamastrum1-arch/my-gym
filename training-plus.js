@@ -1,0 +1,26 @@
+(function(root){
+'use strict';
+const G=typeof module!=='undefined'?require('./core.js'):root.Gym,C=typeof module!=='undefined'?require('./coach.js'):root.Coach;
+const guides=()=>typeof module!=='undefined'?require('./exercise-guides.js'):root.ExerciseGuides;
+const trainer=()=>typeof module!=='undefined'?require('./trainer.js'):root.Trainer;
+const round=x=>Math.round(x*1000)/1000;
+function validateSteps(rows){if(!Array.isArray(rows)||rows.length>200)throw Error('Too many saved equipment increments.');const keys=new Set();for(const r of rows){const key=JSON.stringify([r?.exerciseId,r?.variant]);if(!r||!C.catalog.some(e=>e.id===r.exerciseId&&e.equipment!=='bodyweight')||typeof r.variant!=='string'||r.variant.length>100||!['kg','lb'].includes(r.unit)||!Number.isFinite(r.step)||r.step<.1||r.step>100||round(r.step*(r.unit==='kg'?2.2046226218:1/2.2046226218))<.1||round(r.step*(r.unit==='kg'?2.2046226218:1/2.2046226218))>100||keys.has(key))throw Error('Invalid equipment increment. Use a unique exercise/equipment pair and an increment that converts within 0.1–100 in both kg and lb.');keys.add(key);}return rows;}
+function increment(d,id,variant=''){const row=d.trainer?.loadSteps?.find(r=>r.exerciseId===id&&r.variant===variant);return row?round(row.step*(row.unit===d.unit?1:row.unit==='kg'?2.2046226218:1/2.2046226218)):null;}
+function setIncrement(d,id,variant,step,confirmed){d.trainer??=trainer().defaults();const rows=(d.trainer.loadSteps||[]).filter(r=>r.exerciseId!==id||r.variant!==variant);if(step!==null){if(!confirmed)throw Error('Confirm that you checked the increment on this exact equipment.');rows.push({exerciseId:id,variant,step,unit:d.unit});}validateSteps(rows);d.trainer.loadSteps=rows;return d;}
+function estimate(exercises){const minutes=5+exercises.reduce((n,e)=>n+2+1.5+.8*e.sets+Math.max(0,e.sets-1)*(e.rest||90)/60,0);return {min:Math.ceil(minutes),max:Math.ceil(minutes+10)};}
+function week(d,now=Date.now()){
+const T=trainer(),snapshot={...d,history:d.history.filter(s=>Date.parse(s.finished)<=now)},start=new Date(now);start.setHours(0,0,0,0);const slots=d.profile?.days===2?[1,4]:[1,3,5],optional=d.profile?.days>=4?[2,...(d.profile.days===5?[4]:[])]:[];const check=T.readiness(d,'good',now),out=[];
+for(let i=0;i<7;i++){const date=new Date(start);date.setDate(date.getDate()+i);const [h,m]=(d.personal?.sessionStart||'07:15').split(':').map(Number);date.setHours(h,m,0,0);const row={date:T.day(date),at:date.toISOString(),kind:'rest',label:'Rest / comfortable everyday activity',exercises:[]};
+if(!d.profile){row.kind='setup';row.label='Set up a training profile to preview your week.';}
+else if(slots.includes(date.getDay())){const dayStart=new Date(date);dayStart.setHours(0,0,0,0);const logged=d.history.filter(s=>s.coached&&s.exercises.some(e=>G.done(e).length)&&T.day(s.finished)===row.date&&Date.parse(s.finished)<=now);if(logged.length){row.kind='completed';row.label='Strength session already logged';}
+else if(date.getTime()<now){row.kind='past';row.label='Planned start has passed. Recheck your plan; do not catch up.';}
+else {const plan=T.prepare(snapshot,d.profile,check.value,date.getTime());row.kind=plan.blocked?'recovery':'strength';row.label=plan.blocked?plan.reason:'Provisional full-body session';if(!plan.blocked){row.exercises=plan.exercises;row.budget=plan.minutes;row.estimate=estimate(plan.exercises);row.checkInNeeded=true;}}}
+else if(optional.includes(date.getDay())){row.kind=check.value==='poor'?'rest':'optional';row.label=check.value==='poor'?'Recovery / reassess how you feel':'Optional easy walking or comfortable mobility';}out.push(row);}return out;
+}
+const labels={chest:'Chest',back:'Back',shoulders:'Shoulders',biceps:'Biceps',triceps:'Triceps',core:'Core',quads:'Quadriceps',hamstrings:'Hamstrings',glutes:'Glutes',calves:'Calves'};
+const region=k=>k==='lats'||k==='upperback'?'back':k==='rearshoulders'?'shoulders':k;
+function muscles(d,now=Date.now(),offset=0){if(![0,-1].includes(offset))throw Error('Unsupported report week.');const start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-(start.getDay()+6)%7+offset*7);const end=new Date(start);end.setDate(end.getDate()+7);const groups=Object.entries(labels).map(([id,label])=>({id,label,primary:0,support:0})),map=new Map(groups.map(g=>[g.id,g]));let total=0,mapped=0,sessions=0;const unknown=new Map();
+for(const s of d.history){const finish=Date.parse(s.finished);if(finish<start.getTime()||finish>=end.getTime()||finish>now)continue;let sessionSets=0;for(const e of s.exercises){const count=G.done(e).length;total+=count;sessionSets+=count;if(!count)continue;const g=guides().find(e);if(!g){unknown.set(e.name,(unknown.get(e.name)||0)+count);continue;}mapped+=count;const primary=new Set(g.regions.map(region).filter(k=>map.has(k))),support=new Set(g.support.map(region).filter(k=>map.has(k)&&!primary.has(k)));for(const k of primary)map.get(k).primary+=count;for(const k of support)map.get(k).support+=count;}if(sessionSets)sessions++;}
+return {start:trainer().day(start),end:trainer().day(new Date(end.getTime()-1)),groups,total,mapped,unmapped:total-mapped,sessions,unknown:[...unknown].map(([name,sets])=>({name,sets}))};}
+const api={validateSteps,increment,setIncrement,estimate,week,muscles};if(typeof module!=='undefined')module.exports=api;else root.TrainingPlus=api;
+})(globalThis);

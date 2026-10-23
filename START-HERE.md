@@ -1,12 +1,6 @@
-# Optional AI coach update
+# Training improvements update
 
-AI-COACH.md describes the new in-app coach, separate backend activation, API billing, and privacy boundaries. Saved chat and backend tokens are encrypted in your existing vault and backups. Approved AI messages leave the device and are readable by your backend host and OpenAI; older descriptions of all data staying local apply to offline features only. No live API connection has been configured for you.
-
-# New: free Ask ChatGPT
-
-See ASK-CHATGPT.md for the optional review-and-copy feature. No data is sent automatically. See UPDATE-APP.md before updating an existing installation.
-
-> **Encryption update:** This release requires a passphrase. Saved workouts, notes, Health summaries, and app photos are encrypted. Use Profile → Encryption & locking for a complete encrypted backup, including photos. Older installation/history notes below may describe the earlier readable format; ENCRYPTION.md takes precedence.
+This release has 25 offline movement guides, a provisional seven-day preview, calendar-week muscle reports, equipment-specific progression increments, and encrypted-backup verification without restoring. See TRAINING-PLUS.md and UPDATE-APP.md for the current behavior and update steps; older descriptions below may refer to the earlier 13-guide release. AI chat remains removed.
 
 # Iron Local — your free iPhone gym journal
 

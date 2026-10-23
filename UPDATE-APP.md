@@ -1,10 +1,11 @@
-# Update: in-app AI coach and encrypted chat
+# Update: exercise library, weekly preview, reports, increments and backup checks
 
-1. In your current app, export a complete encrypted backup and save it privately.
-2. Extract iron-local-ai-coach.zip. Upload only the files inside its iron-local folder to your existing GitHub repository, replacing matching files. Keep index.html at the repository root and include all new AI modules. Never upload private profiles, backups, photos, API keys, or connection tokens.
-3. After GitHub Pages deploys, open the same app address online, let it load, close all copies, then reopen. A second close/reopen may be needed for offline cache version 18. Do not clear site data or uninstall the app.
-4. Unlock using your existing passphrase. Open Today → AI coach or Plan → AI coach. The screen is built, but live replies require the separate backend setup in AI-COACH.md.
-5. The separate ai-coach-backend.zip is for Cloudflare, not your public gym site. It contains no secrets. Supply OPENAI_API_KEY and COACH_TOKEN through Cloudflare's private secret prompts, then enter only the backend URL and COACH_TOKEN into the gym app. Do not share your API key or vault passphrase in chat.
-6. Test first with a generic question and no workout context. Confirm a reply saves, lock/unlock, then export a new encrypted backup. Saved AI chat and the connection token are included in full and workout backups; photos remain excluded from workout-only backups.
+1. In your existing app, open Profile → Encryption & locking → Export complete encrypted backup. Save it privately before updating. Keep your existing passphrase.
+2. Extract iron-local-training-plus.zip. Upload all files inside its iron-local folder to your existing GitHub repository, replacing matching files. Keep index.html at the repository root. Include exercise-guides-extra.js, training-plus.js, training-plus-ui.js, backup-check.js, backup-check-ui.js, and TRAINING-PLUS.md along with the other files. Never upload personal profiles, photos, backup files, or passphrases.
+3. Wait for GitHub Pages deployment. Open the same app address online, let it load, close every copy, then reopen. A second close/reopen may be needed for offline cache version 20. Do not clear site data or uninstall the app.
+4. Unlock using your existing passphrase. Try Plan → Exercise library (25 guides), Plan → Week preview, Progress → Muscle report, and Plan → Coaching → Equipment steps.
+5. Export a fresh complete encrypted backup. In Profile → Encryption & locking → Verify a backup without restoring, choose that file and enter the password used for its export. A successful check shows its type and record counts without replacing current data.
 
-No live site, paid account, API billing, backend deployment, or API credentials were changed automatically. The new AI requests need internet and incur API costs. The existing offline rule-based coach and free Ask ChatGPT copy/paste feature remain available. All shipped source/tests use generic or fictional data, with no personal records or preset user password.
+AI chat remains removed. No backend, API account, paid service, native HealthKit integration, or Watch app is required. The app's source is public if hosted on a public Pages site; your private records are still stored encrypted on your device. Nothing has been uploaded to GitHub or changed on your live site automatically.
+
+All new increment settings are included in encrypted workout and complete backups. A workout-only backup still excludes photos. The package contains generic source/tests only, without personal records or preset user passwords. Read TRAINING-PLUS.md for the features' assumptions and limits. Physical iPhone file-picker, update, and lifecycle behavior still need checking on your phone.

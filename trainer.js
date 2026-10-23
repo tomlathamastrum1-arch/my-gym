@@ -7,6 +7,7 @@ const text=(s,max=1000)=>typeof s==='string'&&s.length<=max;
 const date=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(Date.parse(s))&&new Date(s+'T12:00:00Z').toISOString().slice(0,10)===s;
 function validate(t){
 if(!t||t.version!==1||!t.equipment||typeof t.equipment!=='object'||Array.isArray(t.equipment)||Object.keys(t.equipment).length>100||!Array.isArray(t.reviews)||t.reviews.length>2000||!Array.isArray(t.health)||t.health.length>10000)throw Error('Invalid trainer data.');
+if(t.loadSteps!==undefined)(typeof module!=='undefined'?require('./training-plus.js'):root.TrainingPlus).validateSteps(t.loadSteps);
 if(t.assessment){const a=t.assessment;if(!['new','returning'].includes(a.experience)||!['low','medium','high'].includes(a.confidence)||!['not-yet','practice-done'].includes(a.baseline)||!['machines','dumbbells','mixed'].includes(a.preferred)||!text(a.focus,500)||!text(a.barrier,500)||!date(a.date))throw Error('Invalid assessment.');}
 if(t.checkIn){const c=t.checkIn;if(!date(c.date)||!['unknown','low','okay','good'].includes(c.energy)||!['unknown','mild','moderate','high'].includes(c.soreness)||!['unknown','low','medium','high'].includes(c.stress)||!['unknown','yes','no'].includes(c.pain)||!['unknown','yes','no'].includes(c.illness)||!(c.sleep===null||num(c.sleep,0,24))||![30,45,60,75].includes(c.minutes))throw Error('Invalid daily check-in.');}
 for(const [id,e] of Object.entries(t.equipment)){if(!C.catalog.some(c=>c.id===id)||!e||!text(e.variant,100)||!text(e.setup)||!text(e.note)||typeof e.verified!=='boolean')throw Error('Invalid equipment memory.');}
@@ -23,7 +24,7 @@ if(d.trainer!==undefined)validate(d.trainer);
 for(const s of [...d.history,...(d.active?[d.active]:[])]){
 if(s.timeBudget!==undefined&&![30,45,60,75].includes(s.timeBudget))throw Error('Invalid session time budget.');
 if(s.warmupDone!==undefined&&typeof s.warmupDone!=='boolean')throw Error('Invalid warmup status.');
-for(const e of s.exercises){if(e.variant!==undefined&&!text(e.variant,100))throw Error('Invalid equipment variant.');if(e.practice&&(!['setup','range','control'].every(k=>typeof e.practice[k]==='boolean')))throw Error('Invalid technique checklist.');for(const set of e.log)if(set.feedback!==undefined&&!C.feedbackValid(set.feedback))throw Error('Invalid set feedback.');}
+for(const e of s.exercises){if(e.incrementConfirmed!==undefined&&typeof e.incrementConfirmed!=='boolean')throw Error('Invalid equipment increment confirmation.');if(e.variant!==undefined&&!text(e.variant,100))throw Error('Invalid equipment variant.');if(e.practice&&(!['setup','range','control'].every(k=>typeof e.practice[k]==='boolean')))throw Error('Invalid technique checklist.');for(const set of e.log)if(set.feedback!==undefined&&!C.feedbackValid(set.feedback))throw Error('Invalid set feedback.');}
 }
 }
 function readiness(d,fallback='good',now=Date.now()){
@@ -32,7 +33,7 @@ if(c.pain==='yes'||c.illness==='yes'||c.soreness==='high')return {value:'poor',c
 if(c.pain==='unknown'||c.illness==='unknown'||c.energy==='unknown'||c.soreness==='unknown')return {value:'poor',complete:false,reason:'Answer pain, illness, energy, and soreness before the coached session.'};
 return {value:c.energy==='low'||c.soreness==='moderate'||c.stress==='high'||(c.sleep!==null&&c.sleep<6)?'tired':fallback,complete:true,reason:'Uses your reported recovery; sleep and stress never diagnose readiness.'};
 }
-function target(d,p,entry,ready){const variant=d.trainer?.equipment[entry.id]?.variant||'';const filtered={...d,history:d.history.map(s=>({...s,exercises:s.exercises.filter(e=>e.name!==entry.name||(e.variant||'')===variant)}))};return {...C.targets(filtered,p,entry,ready),variant};}
+function target(d,p,entry,ready){const variant=d.trainer?.equipment[entry.id]?.variant||'';const filtered={...d,history:d.history.map(s=>({...s,exercises:s.exercises.filter(e=>e.name!==entry.name||(e.variant||'')===variant)}))};const plus=typeof module!=='undefined'?require('./training-plus.js'):root.TrainingPlus,step=plus.increment(d,entry.id,variant);return {...C.targets(filtered,p,step===null?entry:{...entry,loadStep:step},ready),variant,incrementConfirmed:step!==null};}
 function prepare(d,p,fallback='good',now=Date.now()){
 const r=readiness(d,fallback,now),base=C.plan(d,p,r.value,now);if(base.blocked)return {...base,reason:!r.complete&&d.trainer?.checkIn?.date===day(now)?r.reason:base.reason};
 const review=d.trainer?.reviews.at(-1),easyWeek=review?.decision==='easierWeek'&&now>=Date.parse(review.date+'T00:00:00')&&now-Date.parse(review.date+'T00:00:00')<7*86400000,easy=easyWeek||(review?.decision==='easier'&&review.id!==d.trainer?.appliedReview);
